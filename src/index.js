@@ -1,8 +1,9 @@
 import { createServer } from 'http'
 import { randomUUID } from 'crypto'
 import { jsonMiddleware } from './middleware/jsonMiddleware.js'
+import { Database } from './database.js'
 
-const tasks = []
+const database = new Database()
 
 const server = createServer(async (req, res) => {
   await jsonMiddleware(req, res)
@@ -14,23 +15,24 @@ const server = createServer(async (req, res) => {
   } = req
 
   if (method === 'POST' && url === '/tasks') {
-    tasks.push({
+    const task = {
       id: randomUUID(),
       title,
       description,
       completed_at: null,
       created_at: new Date().toISOString(),
       updated_at: null,
-    })
+    }
 
-    res.end()
-    return
+    database.create('tasks', task)
+
+    return res.end()
   }
 
   if (method === 'GET' && url === '/tasks') {
-    res.end(JSON.stringify(tasks))
+    const tasks = database.select('tasks')
 
-    return
+    return res.end(JSON.stringify(tasks))
   }
 
   res.writeHead(404).end(JSON.stringify({ error: 'not found' }))
