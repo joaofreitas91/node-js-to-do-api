@@ -1,0 +1,16 @@
+{
+  "name": "js-to-do-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@rocketseat/eslint-config": "^2.1.0"
+  }
+}
