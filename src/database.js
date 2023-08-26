@@ -11,16 +11,31 @@ export class Database {
         this.#database = JSON.parse(data)
       })
       .catch(() => {
-        this.persist()
+        this._persist()
       })
   }
 
-  persist() {
+  _persist() {
     fs.writeFile(path, JSON.stringify(this.#database))
   }
 
-  select(table) {
-    return this.#database[table] ?? []
+  select(table, search) {
+    let data = this.#database[table] ?? []
+
+    if (search) {
+      const paramsToSearch = {
+        title: search,
+        description: search,
+      }
+
+      data = data.filter((row) => {
+        return Object.entries(paramsToSearch).some(([key, value]) => {
+          return row[key].toLowerCase().includes(value.toLowerCase())
+        })
+      })
+    }
+
+    return data
   }
 
   create(table, data) {
@@ -30,6 +45,26 @@ export class Database {
       this.#database[table] = [data]
     }
 
-    this.persist()
+    this._persist()
+  }
+
+  update(table, id, data) {
+    this.#database[table] = this.#database[table].map((row) => {
+      if (row.id === id) {
+        return { ...row, ...data }
+      }
+
+      return row
+    })
+
+    this._persist()
+  }
+
+  delete(table, id) {
+    this.#database[table] = this.#database[table].filter(
+      (data) => data.id !== id,
+    )
+
+    this._persist()
   }
 }

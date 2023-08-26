@@ -1,12 +1,42 @@
 import { randomUUID } from 'node:crypto'
 import { Database } from './database.js'
+import { buildRouterPathRegExp } from './utils/build-route-path.js'
 
 const database = new Database()
 
 export const routes = [
   {
+    method: 'GET',
+    path: buildRouterPathRegExp('/tasks'),
+    handler: (req, res) => {
+      const { search } = req.query
+      const tasks = database.select('tasks', search)
+
+      return res.end(JSON.stringify(tasks))
+    },
+  },
+  {
+    method: 'GET',
+    path: buildRouterPathRegExp('/tasks/:id'),
+    handler: (req, res) => {
+      const { id } = req.params
+
+      const tasks = database.select('tasks')
+
+      const uniqueTask = tasks.find((task) => task.id === id)
+
+      if (uniqueTask) {
+        return res.end(JSON.stringify(uniqueTask))
+      }
+
+      return res
+        .writeHead(404)
+        .end(JSON.stringify({ error: 'Resource not found' }))
+    },
+  },
+  {
     method: 'POST',
-    path: '/tasks',
+    path: buildRouterPathRegExp('/tasks'),
     handler: (req, res) => {
       const { title, description } = req.body
       const task = {
@@ -24,12 +54,52 @@ export const routes = [
     },
   },
   {
-    method: 'GET',
-    path: '/tasks',
+    method: 'PUT',
+    path: buildRouterPathRegExp('/tasks/:id'),
     handler: (req, res) => {
-      const tasks = database.select('tasks')
+      const { id } = req.params
+      const { title, description } = req.body
 
-      return res.end(JSON.stringify(tasks))
+      const tasks = database.select('tasks')
+      const hasTask = tasks.some((task) => task.id === id)
+
+      if (hasTask && (title || description)) {
+        const task = {}
+
+        if (title) {
+          task.title = title
+        }
+
+        if (description) {
+          task.description = description
+        }
+
+        database.update('tasks', id, task)
+        return res.end()
+      }
+
+      return res
+        .writeHead(404)
+        .end(JSON.stringify({ error: 'Resource not found' }))
+    },
+  },
+  {
+    method: 'DELETE',
+    path: buildRouterPathRegExp('/tasks/:id'),
+    handler: (req, res) => {
+      const { id } = req.params
+
+      const tasks = database.select('tasks')
+      const hasTask = tasks.some((task) => task.id === id)
+
+      if (hasTask) {
+        database.delete('tasks', id)
+        return res.end()
+      }
+
+      return res
+        .writeHead(404)
+        .end(JSON.stringify({ error: 'Resource not found' }))
     },
   },
 ]
