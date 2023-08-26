@@ -39,18 +39,25 @@ export const routes = [
     path: buildRouterPathRegExp('/tasks'),
     handler: (req, res) => {
       const { title, description } = req.body
-      const task = {
-        id: randomUUID(),
-        title,
-        description,
-        completed_at: null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+
+      if (title && description) {
+        const task = {
+          id: randomUUID(),
+          title,
+          description,
+          completed_at: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }
+
+        database.create('tasks', task)
+
+        return res.writeHead(201).end()
       }
 
-      database.create('tasks', task)
-
-      return res.end()
+      return res
+        .writeHead(400)
+        .end(JSON.stringify({ error: 'Missing required fields' }))
     },
   },
   {
