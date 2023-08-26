@@ -51,7 +51,7 @@ export class Database {
   update(table, id, data) {
     this.#database[table] = this.#database[table].map((row) => {
       if (row.id === id) {
-        return { ...row, ...data }
+        return { ...row, updated_at: new Date().toISOString(), ...data }
       }
 
       return row
@@ -71,7 +71,11 @@ export class Database {
   complete(table, id, key) {
     this.#database[table] = this.#database[table].map((row) => {
       if (row.id === id) {
-        return { ...row, [key]: row[key] ? null : new Date().toISOString() }
+        return {
+          ...row,
+          updated_at: new Date().toISOString(),
+          [key]: row[key] ? null : new Date().toISOString(),
+        }
       }
 
       return row
