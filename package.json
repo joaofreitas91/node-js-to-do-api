@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "import-csv": "node src/streams/import-csv.js"
   },
   "keywords": [],
   "author": "",
