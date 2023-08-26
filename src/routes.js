@@ -126,7 +126,7 @@ export const routes = [
 
       if (hasTask) {
         database.delete('tasks', id)
-        return res.end()
+        return res.writeHead(204).end()
       }
 
       return res
