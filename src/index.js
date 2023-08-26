@@ -1,38 +1,18 @@
 import { createServer } from 'http'
-import { randomUUID } from 'crypto'
 import { jsonMiddleware } from './middleware/jsonMiddleware.js'
-import { Database } from './database.js'
-
-const database = new Database()
+import { routes } from './routes.js'
 
 const server = createServer(async (req, res) => {
   await jsonMiddleware(req, res)
 
-  const {
-    method,
-    url,
-    body: { title, description },
-  } = req
+  const { method, url } = req
 
-  if (method === 'POST' && url === '/tasks') {
-    const task = {
-      id: randomUUID(),
-      title,
-      description,
-      completed_at: null,
-      created_at: new Date().toISOString(),
-      updated_at: null,
-    }
+  const route = routes.find((route) => {
+    return method === route.method && url === route.path
+  })
 
-    database.create('tasks', task)
-
-    return res.end()
-  }
-
-  if (method === 'GET' && url === '/tasks') {
-    const tasks = database.select('tasks')
-
-    return res.end(JSON.stringify(tasks))
+  if (route) {
+    return route.handler(req, res)
   }
 
   res.writeHead(404).end(JSON.stringify({ error: 'not found' }))
