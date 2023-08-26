@@ -20,19 +20,22 @@ API desenvolvida com **NodeJS** e a biblioteca **CSV-Parse** para realizar impor
 
 ## Pré requisitos
 
-- **NodeJS** e **npm** instalados.
+- **NodeJS**, **NPM** e **Git** instalados.
 
 ## Clone o repositório
-
+Abra o terminal e execute o comando abaixo:
 ```sh
 git clone https://github.com/joaofreitas91/node-js-to-do-api.git
 ```
 ## Instale as dependências
 
-Navegue até o diretório do projeto e instale as dependencias:
+Navegue até o diretório do projeto:
   
   ```sh
   cd node-js-to-do-api
+  ```
+instale as dependencias:
+  ```sh
   npm install
   ```
 ## Inicie o servidor
@@ -45,7 +48,11 @@ Inicialize o servidor usando o seguinte comando:
 A API estará disponível na url: http://localhost:3333.
 
 ## Importação de tasks em massa por um arquivo CSV
-Após clonar o respositório e iniciar o servidor, execute o comando:
+Após clonar o respositório e iniciar o servidor, abra um novo terminal e navegue até o diretório do projeto:
+```sh
+cd node-js-to-do-api
+```
+execute o comando:
 ```sh
   npm run import-csv
 ```
