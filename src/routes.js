@@ -71,7 +71,7 @@ export const routes = [
 
       if (hasTask) {
         database.complete('tasks', id, 'completed_at')
-        return res.end()
+        return res.writeHead(204).end()
       }
 
       return res
@@ -101,7 +101,7 @@ export const routes = [
         }
 
         database.update('tasks', id, task)
-        return res.end()
+        return res.writeHead(204).end()
       }
 
       return res
