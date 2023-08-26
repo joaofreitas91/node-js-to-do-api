@@ -67,4 +67,16 @@ export class Database {
 
     this._persist()
   }
+
+  complete(table, id, key) {
+    this.#database[table] = this.#database[table].map((row) => {
+      if (row.id === id) {
+        return { ...row, [key]: row[key] ? null : new Date().toISOString() }
+      }
+
+      return row
+    })
+
+    this._persist()
+  }
 }

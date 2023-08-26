@@ -54,6 +54,25 @@ export const routes = [
     },
   },
   {
+    method: 'PATCH',
+    path: buildRouterPathRegExp('/tasks/:id/complete'),
+    handler: (req, res) => {
+      const { id } = req.params
+
+      const tasks = database.select('tasks')
+      const hasTask = tasks.some((task) => task.id === id)
+
+      if (hasTask) {
+        database.complete('tasks', id, 'completed_at')
+        return res.end()
+      }
+
+      return res
+        .writeHead(404)
+        .end(JSON.stringify({ error: 'Resource not found' }))
+    },
+  },
+  {
     method: 'PUT',
     path: buildRouterPathRegExp('/tasks/:id'),
     handler: (req, res) => {
