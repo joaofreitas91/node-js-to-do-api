@@ -89,19 +89,25 @@ export const routes = [
       const tasks = database.select('tasks')
       const hasTask = tasks.some((task) => task.id === id)
 
-      if (hasTask && (title || description)) {
-        const task = {}
+      if (hasTask) {
+        if (title || description) {
+          const task = {}
 
-        if (title) {
-          task.title = title
+          if (title) {
+            task.title = title
+          }
+
+          if (description) {
+            task.description = description
+          }
+
+          database.update('tasks', id, task)
+          return res.writeHead(204).end()
+        } else {
+          return res
+            .writeHead(400)
+            .end(JSON.stringify({ error: 'Missing required fields' }))
         }
-
-        if (description) {
-          task.description = description
-        }
-
-        database.update('tasks', id, task)
-        return res.writeHead(204).end()
       }
 
       return res
